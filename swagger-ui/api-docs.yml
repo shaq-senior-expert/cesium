@@ -1,0 +1,154 @@
+openapi: 3.0.0
+info:
+  title: Materials API
+  version: 1.0.0
+  description: API for managing materials and construction sites.
+
+servers:
+  - url: http://localhost:8080
+    description: Local server
+
+paths:
+  /materials:
+    get:
+      summary: Get all materials
+      responses:
+        '200':
+          description: A list of materials
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Material'
+    post:
+      summary: Create a new material
+      requestBody:
+        description: Material to create
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MaterialInput'
+      responses:
+        '200':
+          description: Material created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  construction_site_id:
+                    type: string
+                    format: uuid
+  /materials/{id}:
+    get:
+      summary: Get a material by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: ID of the material to retrieve
+      responses:
+        '200':
+          description: Material retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Material'
+        '404':
+          description: Material not found
+    put:
+      summary: Update an existing material
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: ID of the material to update
+      requestBody:
+        description: Material data to update
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateMaterialInput'
+      responses:
+        '204':
+          description: Material updated successfully
+    delete:
+      summary: Delete an existing material
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: ID of the material to delete
+      responses:
+        '204':
+          description: Material deleted successfully
+
+components:
+  schemas:
+    Material:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        volume:
+          type: number
+          format: double
+        cost_per_cubic_meter:
+          type: number
+          format: double
+        color:
+          type: string
+        delivery_date:
+          type: string
+          format: date
+        construction_site_id:
+          type: string
+          format: uuid
+    MaterialInput:
+      type: object
+      properties:
+        name:
+          type: string
+        volume:
+          type: number
+          format: double
+          required: true
+        cost_per_cubic_meter:
+          type: number
+          format: double
+          required: true
+        color:
+          type: string
+          required: true
+        delivery_date:
+          type: string
+          format: date
+    UpdateMaterialInput:
+      type: object
+      properties:
+        name:
+          type: string
+        volume:
+          type: number
+          format: double
+        cost_per_cubic_meter:
+          type: number
+          format: double
+        color:
+          type: string
+        delivery_date:
+          type: string
+          format: date
